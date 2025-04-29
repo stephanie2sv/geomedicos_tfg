@@ -1,0 +1,61 @@
+<div class="container py-1">
+  <app-enfermedad-encabezado></app-enfermedad-encabezado>
+    <!-- Filtros -->
+    <app-enfermedad-filtros
+    [termino]="terminoBusqueda"
+    [sugerencias]="sugerenciasBusqueda"
+    [especialidades]="especialidades"
+    [especialidadId]="especialidadSeleccionada"
+    (onInputChange)="actualizarTermino($event)"
+    (onBuscar)="buscarEnfermedades()"
+    (onEspecialidadChange)="actualizarEspecialidad($event)">
+  </app-enfermedad-filtros>
+  
+    <!-- Estado -->
+     @if(cargando){
+        <app-cargando-spinner></app-cargando-spinner>
+     }@else if (error) {
+        <div class="alert alert-danger">{{ error }}</div>
+     }@else if(!cargando && !error && enfermedadesFiltradas.length === 0) {
+        <div  class="alert alert-info">
+            No se encontraron enfermedades que coincidan con su búsqueda.
+        </div>
+     }
+ 
+    <!-- Listado -->
+     @if(enfermedadesPaginadas){
+        <div class="row" >
+            @for(enfermedad of enfermedadesPaginadas; track enfermedad.idEnfermedad){
+                <div class="col-md-4 mb-4">
+                    <app-enfermedad-card
+                      [enfermedad]="enfermedad"
+                      (onDetalle)="verDetalle($event)"
+                    ></app-enfermedad-card>
+                  </div>
+                
+            }
+        </div>    
+     }
+
+  
+    <!-- Paginación -->
+     @if(enfermedadesFiltradas.length > elementosPorPagina){
+      <app-enfermedad-paginacion
+      [pagina]="paginaActual"
+      [totalPaginas]="totalPaginas"
+      (onPaginaChange)="cambiarPagina($event)">
+    </app-enfermedad-paginacion>
+     }
+
+  
+    <!-- Modal -->
+     @if(enfermedadSeleccionada){
+        <app-enfermedades-detalle
+        [enfermedad]="enfermedadSeleccionada"
+        (cerrar)="cerrarDetalle()"
+        (buscarDoctores)="buscarDoctoresPorEnfermedad($event)"
+      ></app-enfermedades-detalle>
+     }
+
+  </div>
+  

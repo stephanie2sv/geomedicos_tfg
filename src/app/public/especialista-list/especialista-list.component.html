@@ -1,0 +1,30 @@
+<div class="container py-1">
+<app-especialista-encabezado></app-especialista-encabezado>
+
+<app-especialista-filtros
+  [termino]="terminoBusqueda"
+  [orden]="ordenSeleccionado"
+  (onBuscar)="actualizarTermino($event)"
+  (onOrdenar)="cambiarOrden($event)">
+</app-especialista-filtros>
+
+   
+    @if (cargando) {
+        <app-cargando-spinner></app-cargando-spinner>
+    } @else if (error) {
+        <div class="alert alert-danger">{{ error }}</div>
+    } @else if (medicosFiltrados.length === 0) {
+        <div class="alert alert-info">No se encontraron médicos que coincidan con su búsqueda.</div>
+    } @else {
+        <!-- Listado de médicos -->
+        <app-especialista-listado-medicos [medicos]="medicosPaginados" (verDetalle)="verDetalle($event)" (solicitarCita)="solicitarCita($event)"></app-especialista-listado-medicos>
+
+
+        <app-especialista-paginacion></app-especialista-paginacion>
+    }
+
+    <!-- Componente Modal para detalle del médico -->
+    @if (medicoSeleccionado) {
+        <app-especialista-detalle [medico]="medicoSeleccionado" (cerrar)="cerrarDetalle()" (solicitarCita)="solicitarCita($event)"></app-especialista-detalle>
+    }
+</div>
